@@ -1,0 +1,154 @@
+//MATRICOLA: <20046497>
+//NOME: <Omar Antonio>
+//COGNOME: <Zoubi>
+
+.constant
+OBJREF 0X40
+.end-constant
+
+.main
+.var
+fattoriale//variabile che conterrà il risultato, ovvero il fattoriale del numero inserito da tastiera
+numero
+.end-var
+
+		BIPUSH 0
+		ISTORE fattoriale//Inizializzazione di fattoriale a zero
+		BIPUSH 0
+		ISTORE numero
+	
+		BIPUSH 4
+		BIPUSH 0x30
+		IADD
+		OUT
+		BIPUSH 0x0A
+		OUT
+		BIPUSH 4
+		DUP // Duplica il top dello stack
+		GOTO done
+		
+	CICLO:
+		BIPUSH 9
+		BIPUSH 0x30
+		IADD
+		OUT
+		BIPUSH 0x0A
+		OUT
+		BIPUSH 9
+		DUP // Duplica il top dello stack
+		GOTO doneF
+	
+	CICLOf:
+		BIPUSH 7
+		BIPUSH 0x30
+		IADD
+		OUT
+		BIPUSH 0x0A
+		OUT
+		BIPUSH 7
+		DUP // Duplica il top dello stack
+		GOTO END
+		
+	done: 	
+		ISTORE numero
+		LDC_W OBJREF
+		ILOAD numero
+		INVOKEVIRTUAL FATT
+		ISTORE fattoriale//memorizzazione del risultato nella variabile "fattoriale"
+		ILOAD fattoriale
+		INVOKEVIRTUAL BINARY
+		GOTO CICLO
+		
+	doneF: 	
+		ISTORE numero
+		LDC_W OBJREF
+		ILOAD numero
+		INVOKEVIRTUAL FATT
+		ISTORE fattoriale//memorizzazione del risultato nella variabile "fattoriale"
+		ILOAD fattoriale
+		INVOKEVIRTUAL BINARY
+		GOTO CICLOf
+		
+	END: 	
+		ISTORE numero
+		LDC_W OBJREF
+		ILOAD numero
+		INVOKEVIRTUAL FATT
+		ISTORE fattoriale//memorizzazione del risultato nella variabile "fattoriale"
+		ILOAD fattoriale
+		INVOKEVIRTUAL BINARY
+		HALT // il ciclo viene copiato ripetute quante volte, quanti sono i numeri per cui bisogna fare il fattoriale
+		
+.end-main
+		
+.method FATT(n) //risoluzione tramite ricorsione
+		ILOAD n
+		IFEQ zero //se n è uguale zero salta alla label zero (caso base)
+		LDC_W OBJREF
+		DUP
+		ILOAD n
+		BIPUSH 1
+		ISUB
+		INVOKEVIRTUAL FATT
+		ILOAD n
+		INVOKEVIRTUAL MOLTIPLICA
+		GOTO fine
+	zero: 
+		BIPUSH 1
+	fine: 
+		IRETURN
+.end-method
+
+
+.method moltiplica (x,y)
+.var
+prodotto
+.end-var
+
+		BIPUSH 0
+		ISTORE prodotto
+		
+	ciclo: 
+		ILOAD y
+		IFEQ fine
+		ILOAD prodotto
+		ILOAD x
+		IADD
+		ISTORE prodotto
+		IINC y -1
+		GOTO ciclo
+	fine:
+		ILOAD prodotto
+		IRETURN
+.end-method
+
+.method BINARY(n)
+.var
+count
+.end-var
+		BIPUSH 32
+		ISTORE COUNT
+		ILOAD n
+	CICLA:
+		ILOAD COUNT
+		IFEQ FINE
+		DUP
+		IFLT UNO
+		BIPUSH 0x30
+		OUT
+		GOTO DOPOiF
+	UNO:
+		BIPUSH 0x31
+		OUT
+	DOPOiF:
+		DUP
+		IADD
+		IINC COUNT -1
+		GOTO CICLA
+	FINE:
+		POP
+		BIPUSH 0x0A
+		OUT
+		ILOAD n
+		IRETURN
+.end-method
